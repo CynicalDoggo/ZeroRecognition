@@ -1,0 +1,34 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React App</title>
+    <link href="/dist/output.css" rel="stylesheet"> <!-- Link to Tailwind CSS -->
+  </head>
+  <body class="h-full m-0 bg-gray-100"> <!-- Full height and remove margin -->
+    <div id="root" class="h-full"></div> <!-- Ensure #root takes full height -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8R02dv36deDSDYrPoV-qu4485yGnk80w",
+    authDomain: "facialrecog-2b424.firebaseapp.com",
+    projectId: "facialrecog-2b424",
+    storageBucket: "facialrecog-2b424.firebasestorage.app",
+    messagingSenderId: "715616115136",
+    appId: "1:715616115136:web:70f127d3b870c6aa621025"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>

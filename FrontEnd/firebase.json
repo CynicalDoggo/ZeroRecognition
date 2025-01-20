@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "dist", 
+    "ignore": [
+      "**/.*",          
+      "**/node_modules/**", 
+      "**/*.exe",       
+      "**/*.dll"        
+    ],
+    "rewrites": [
+      {
+        "source": "**", 
+        "destination": "/index.html" 
+      }
+    ]
+  }
+}
