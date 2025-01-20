@@ -50,6 +50,16 @@ const RoomPreferences = () => {
                             <input
                                 type="radio"
                                 name="bedType"
+                                value="King"
+                                checked={preferences.bedType === "King"}
+                                onChange={handleChange}
+                            />
+                            <span>King</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                name="bedType"
                                 value="Queen"
                                 checked={preferences.bedType === "Queen"}
                                 onChange={handleChange}
@@ -60,11 +70,11 @@ const RoomPreferences = () => {
                             <input
                                 type="radio"
                                 name="bedType"
-                                value="Twin"
-                                checked={preferences.bedType === "Twin"}
+                                value="Single"
+                                checked={preferences.bedType === "Single"}
                                 onChange={handleChange}
                             />
-                            <span>Twin</span>
+                            <span>Single</span>
                         </label>
                     </div>
                 </div>

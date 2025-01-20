@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Blacklist from "../components/StaffHomePage/Blacklist";
 import GuestRoomStatus from "../components/StaffHomePage/GuestRoomStatus";
 import GuestLog from "../components/StaffHomePage/GuestLog";
+import GuestCheckIn from "../components/StaffHomePage/GuestCheckIn";
 
 const StaffHomepage = ({ token }) => {
     let navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState("Guest Log");
+    const [activeTab, setActiveTab] = useState("Guest Check In");
 
     function handleLogout() {
         sessionStorage.removeItem("token");
@@ -16,6 +17,8 @@ const StaffHomepage = ({ token }) => {
 
     const renderContent = () => {
         switch (activeTab) {
+            case "Guest Check In":
+                return <GuestCheckIn />;
             case "Guest Log":
                 return <GuestLog />;
             case "Room Status":
@@ -32,7 +35,7 @@ const StaffHomepage = ({ token }) => {
             {/* Sidebar */}
             <nav className="w-1/4 bg-gray-200 p-4 space-y-4">
                 <h3 className="text-xl font-bold mb-4">Staff Panel</h3>
-                {["Guest Log", "Room Status", "Blacklist"].map((tab) => (
+                {["Guest Check In","Guest Log", "Room Status", "Blacklist"].map((tab) => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
