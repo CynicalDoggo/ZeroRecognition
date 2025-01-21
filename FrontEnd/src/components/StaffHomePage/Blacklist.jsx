@@ -41,15 +41,15 @@ const Blacklist = () => {
             <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
                 <thead>
                     <tr className="bg-red-500 text-white">
-                        <th className="border border-gray-300 px-6 py-3 text-left">Guest Name</th>
-                        <th className="border border-gray-300 px-6 py-3 text-left">Reason for Blacklist</th>
+                        <th className="px-6 py-3 text-left">Guest Name</th>
+                        <th className="px-6 py-3 text-left">Reason for Blacklist</th>
                     </tr>
                 </thead>
                 <tbody>
                     {blacklistedGuests.map((guest, index) => (
                         <tr key={guest.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-red-50`}>
-                            <td className="border border-gray-300 px-6 py-3 text-left font-medium text-gray-800">{guest.guestName}</td>
-                            <td className="border border-gray-300 px-6 py-3 text-left font-medium text-gray-800">{guest.reason}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{guest.guestName}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{guest.reason}</td>
                         </tr>
                     ))}
                 </tbody>

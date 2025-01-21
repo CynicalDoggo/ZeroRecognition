@@ -30,13 +30,29 @@ const GuestCheckIn = () => {
             <h1 className="text-2xl font-bold mb-6">Guest Check-In</h1>
 
             {/* Search Bar */}
-            <div className="mb-6">
+            <div className="mb-6 relative">
+                <svg 
+                    className="absolute top-1/2 left-3 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-white" 
+                    aria-hidden="true" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                >
+                    <path 
+                    stroke="currentColor" 
+                    stroke-linecap="round" 
+                    stroke-width="2" 
+                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                    />
+                </svg>
                 <input
                     type="text"
                     placeholder="Search for a guest..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
             </div>
 

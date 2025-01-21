@@ -11,20 +11,20 @@ const GuestLog = () => {
         <div className="p-6 bg-gradient-to-r from-green-50 to-green-100 shadow-lg rounded-lg">
             <h2 className="text-3xl font-bold text-green-900 mb-6 text-center">Guest Activity Log</h2>
 
-            <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
                 <thead>
                     <tr className="bg-green-500 text-white">
-                        <th className="border border-gray-300 px-6 py-3 text-left">Guest Name</th>
-                        <th className="border border-gray-300 px-6 py-3 text-left">Timestamp</th>
-                        <th className="border border-gray-300 px-6 py-3 text-left">Activity</th>
+                        <th className="px-6 py-3 text-left">Guest Name</th>
+                        <th className="px-6 py-3 text-left">Timestamp</th>
+                        <th className="px-6 py-3 text-left">Activity</th>
                     </tr>
                 </thead>
                 <tbody>
                     {logEntries.map((entry, index) => (
                         <tr key={entry.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-green-50`}>
-                            <td className="border border-gray-300 px-6 py-3 text-left font-medium text-gray-800">{entry.guestName}</td>
-                            <td className="border border-gray-300 px-6 py-3 text-left font-medium text-gray-800">{entry.timestamp}</td>
-                            <td className="border border-gray-300 px-6 py-3 text-left font-medium text-gray-800">{entry.activity}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.guestName}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.timestamp}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.activity}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -65,21 +65,57 @@ const UserManagement = () => {
             {/* Add Staff Button */}
             <button
                 onClick={() => setShowForm(true)}
-                className="absolute top-6 right-6 bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition duration-300"
-            >
+                className="absolute top-6 right-6 flex items-center bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition duration-300"
+                >
+                <svg 
+                    className="w-6 h-6 text-white mr-2" 
+                    aria-hidden="true" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                >
+                    <path 
+                    stroke="currentColor" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M16 12h4m-2 2v-4M4 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                </svg>
                 Add Staff
             </button>
 
+
             {/* Search Staff Section */}
-            <div className="mb-6">
+            <div className="mb-6 relative">
+                <svg 
+                    className="absolute top-1/2 left-3 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-white" 
+                    aria-hidden="true" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                >
+                    <path 
+                    stroke="currentColor" 
+                    stroke-linecap="round" 
+                    stroke-width="2" 
+                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                    />
+                </svg>
                 <input
                     type="text"
                     placeholder="Search Staff"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
             </div>
+
+
 
             {/* Staff Table */}
             <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden mb-6">
@@ -93,23 +129,59 @@ const UserManagement = () => {
                 <tbody>
                     {filteredStaff.map((staff) => (
                         <tr key={staff.id} className="hover:bg-purple-50">
-                            <td className="px-6 py-3 text-left font-medium text-gray-800">{staff.name}</td>
-                            <td className="px-6 py-3 text-left font-medium text-gray-800">{staff.role}</td>
-                            <td className="px-6 py-3 text-left">
-                                <button
-                                    onClick={() => handleEditStaff(staff)}
-                                    className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 mr-2"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteStaff(staff.id)}
-                                    className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
-                                >
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                        <td className="px-6 py-3 text-left font-medium text-gray-800">{staff.name}</td>
+                        <td className="px-6 py-3 text-left font-medium text-gray-800">{staff.role}</td>
+                        <td className="px-6 py-3 text-left">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleEditStaff(staff)}
+                              className="bg-blue-500 text-white flex items-center px-4 py-1 rounded hover:bg-blue-600 transition duration-300"
+                            >
+                              <svg 
+                                className="w-5 h-5 text-white mr-2" 
+                                aria-hidden="true" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="24" 
+                                height="24" 
+                                fill="none" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path 
+                                  stroke="currentColor" 
+                                  stroke-linecap="square" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"
+                                />
+                              </svg>
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStaff(staff.id)}
+                              className="bg-red-500 text-white flex items-center px-4 py-1 rounded hover:bg-red-600 transition duration-300"
+                            >
+                              <svg 
+                                className="w-5 h-5 text-white mr-2" 
+                                aria-hidden="true" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="24" 
+                                height="24" 
+                                fill="none" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path 
+                                  stroke="currentColor" 
+                                  stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                                />
+                              </svg>
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>                      
                     ))}
                 </tbody>
             </table>
