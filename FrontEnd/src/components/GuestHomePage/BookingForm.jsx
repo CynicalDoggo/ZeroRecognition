@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BookingForm = () => {
-
   const navigate = useNavigate(); // Initialize navigate
   // State for booking form fields
   const [formData, setFormData] = useState({
     roomType: '',
     checkInDate: '',
     checkOutDate: '',
-    selectedAmenities: [],
+    ExtraTowels: false,
+    RoomService: false,
+    SpaAccess: false,
+    AirportPickup: false,
+    LateCheckout: false,
   });
+
   const [bookingStatus, setBookingStatus] = useState(null);
 
   // List of available amenities
@@ -33,42 +37,69 @@ const BookingForm = () => {
 
   // Handle selecting amenities
   const handleAmenitiesChange = (e) => {
-    const value = e.target.value;
-    if (e.target.checked) {
-      setFormData((prev) => ({
-        ...prev,
-        selectedAmenities: [...prev.selectedAmenities, value],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        selectedAmenities: prev.selectedAmenities.filter(
-          (amenity) => amenity !== value
-        ),
-      }));
-    }
+    const name = e.target.name; // Use the name attribute
+    const isChecked = e.target.checked; // Checkbox state
+    setFormData((prev) => ({
+      ...prev,
+      [name]: isChecked, // Update the boolean value
+    }));
   };
 
-  // Handle form submission (Save Booking)
-  const handleSaveChanges = () => {
-    const { roomType, checkInDate, checkOutDate } = formData;
+  const handleSaveChanges = async () => {
+    const { roomType, checkInDate, checkOutDate, ...amenities } = formData;
+  
     if (!roomType || !checkInDate || !checkOutDate) {
-      alert('Please fill in all required fields');
+      alert("Please fill in all required fields");
       return;
     }
-    console.log(formData);
-    navigate('/Homepage');
+
+    try {
+      const userId = sessionStorage.getItem("user_id");
+  
+      const payload = {
+        user_id: userId,
+        room_type: roomType,
+        check_in_date: checkInDate,
+        check_out_date: checkOutDate,
+        ...amenities, // Include amenities dynamically
+      };
+
+      const response = await fetch("http://localhost:5000/book_room", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        setBookingStatus(data.message); // Set the success message
+        setTimeout(() => {
+          navigate("/Homepage"); // Navigate after a short delay to allow the user to read the message
+        }, 2000); // Delay of 2 seconds
+      } else {
+        setBookingStatus(data.message || "Booking failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      setBookingStatus("An error occurred. Please try again.");
+    }
   };
 
-  // Handle cancel booking
   const handleCancelBooking = () => {
     setFormData({
       roomType: '',
       checkInDate: '',
       checkOutDate: '',
-      selectedAmenities: [],
+      ExtraTowels: false,
+      RoomService: false,
+      SpaAccess: false,
+      AirportPickup: false,
+      LateCheckout: false,
     });
-    navigate('/Homepage');
+    navigate("/Homepage");
   };
 
   return (
@@ -132,9 +163,9 @@ const BookingForm = () => {
               <input
                 type="checkbox"
                 id={`amenity-${amenity.id}`}
-                value={amenity.name}
+                name={amenity.name.replace(/\s+/g, '')} // Convert name to match formData keys
                 onChange={handleAmenitiesChange}
-                checked={formData.selectedAmenities.includes(amenity.name)}
+                checked={formData[amenity.name.replace(/\s+/g, '')]} // Use boolean value from formData
                 className="mr-2"
               />
               <label htmlFor={`amenity-${amenity.id}`} className="text-sm">

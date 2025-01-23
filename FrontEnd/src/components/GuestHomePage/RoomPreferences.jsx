@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 const RoomPreferences = () => {
     const [preferences, setPreferences] = useState({
-        bedType: "",
-        roomView: "",
-        floorPreference: "",
+        bedType: "Single",
+        roomView: "City",
+        floorPreference: "Low",
         additionalFeatures: {
             extraPillows: false,
             extraBeds: false,
@@ -13,30 +13,66 @@ const RoomPreferences = () => {
         },
     });
 
-    const handleChange = (event) => {
-        const { name, value, type, checked } = event.target;
+    const userID = sessionStorage.getItem("user_id");
 
-        if (type === "checkbox") {
-            setPreferences((prev) => ({
-                ...prev,
+    if (!userID) {
+        alert("User is not authenticated!");
+        return;
+    }
+      
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        try {
+          const response = await fetch("http://localhost:5000/save_preferences", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                user_id: userID,
+                preferences: {
+                  bedType: preferences.bedType,
+                  roomView: preferences.roomView,
+                  floorPreference: preferences.floorPreference,
+                  additionalFeatures: preferences.additionalFeatures,
+                }
+              }),
+          });
+      
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                alert("Preferences saved successfully!");
+            } else {
+                alert("Error saving preferences: " + (result.message || "Unknown error."));
+            }
+            } else {
+                alert(`Failed to save preferences: ${response.statusText}`);
+            }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      };
+    
+      const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        if (name in preferences.additionalFeatures) {
+            setPreferences((prevPreferences) => ({
+                ...prevPreferences,
                 additionalFeatures: {
-                    ...prev.additionalFeatures,
-                    [name]: checked,
+                    ...prevPreferences.additionalFeatures,
+                    [name]: type === "checkbox" ? checked : value,
                 },
             }));
-        } else if (type === "radio") {
-            setPreferences((prev) => ({
-                ...prev,
-                [name]: prev[name] === value ? "" : value,
-            }));
+        } else {
+          setPreferences((prevPreferences) => ({
+            ...prevPreferences,
+            [name]: type === "checkbox" ? checked : value,
+          }));
         }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Submitted Preferences:", preferences);
-        alert("Preferences saved successfully!");
-    };
+      };
+      
 
     return (
         <div className="bg-white p-6 shadow-md rounded-md">
