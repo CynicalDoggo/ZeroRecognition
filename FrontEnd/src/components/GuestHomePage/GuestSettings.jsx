@@ -30,7 +30,7 @@ const GuestSettings = () => {
         console.log("User ID:", userId); // Debugging log
 
         const response = await fetch(
-          `http://localhost:5000/get_user_data?user_id=${userId}`,
+          `https://facialrecbackend.onrender.com/get_user_data?user_id=${userId}`,
           {
             method: "GET",
             headers: {
@@ -86,7 +86,7 @@ const GuestSettings = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/change_password", {
+      const response = await fetch("https://facialrecbackend.onrender.com/change_password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

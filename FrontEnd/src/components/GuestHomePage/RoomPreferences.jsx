@@ -24,7 +24,7 @@ const RoomPreferences = () => {
         e.preventDefault();
       
         try {
-          const response = await fetch("http://localhost:5000/save_preferences", {
+          const response = await fetch("https://facialrecbackend.onrender.com/save_preferences", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

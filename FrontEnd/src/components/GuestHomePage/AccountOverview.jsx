@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import GuestSettings from "./GuestSettings"; // Import the GuestSettings component
 
 const AccountOverview = () => {
   const [userData, setUserData] = useState({
@@ -17,7 +16,13 @@ const AccountOverview = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/get_user_data?user_id=${userId}`
+          `https://facialrecbackend.onrender.com/get_user_data?user_id=${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
