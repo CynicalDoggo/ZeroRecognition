@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from '../supabaseclient';
-import { Link, useNavigate } from "react-router-dom";
-
-
+import {useNavigate } from "react-router-dom";
 
 const StaffLogin = ({setToken}) => {
     let navigate = useNavigate()
@@ -34,10 +32,30 @@ const StaffLogin = ({setToken}) => {
           if (error) throw error; // Handle error if sign-in fails
   
           console.log("Login successful:", data);
-  
-          // Store user data or token in state or local storage
-          setToken(data); // Assuming user contains necessary info
-          navigate('/StaffHomepage');
+
+          const userId = data.user.id;
+
+          // Check if the user has a 'staff' role in the profiles table
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', userId)
+            .single(); // Ensure only one result is returned
+
+          if (profileError) {
+            throw profileError;
+          }
+    
+          // If the role is 'staff', allow login
+          if (profileData && profileData.role === 'staff') {
+            console.log("Staff login successful");
+
+            // Store user data or token in state or local storage
+            setToken(data); // Assuming user contains necessary info
+            navigate('/StaffHomepage');
+          } else {
+            alert("You are not authorized to access this page.");
+          }
   
       } catch (error) {
           console.error("Error during login:", error);

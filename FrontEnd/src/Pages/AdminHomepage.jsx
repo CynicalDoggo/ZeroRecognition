@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserManagement from "../components/AdminHomePage/UserManagement";
 import SystemMonitoring from "../components/AdminHomePage/SystemMonitoring";
@@ -6,6 +6,14 @@ import SystemMonitoring from "../components/AdminHomePage/SystemMonitoring";
 const AdminHomepage = ({ token }) => {
     let navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("User Management");
+
+    useEffect(() => {
+        const storedToken = sessionStorage.getItem("token");
+        if (!storedToken) {
+            // If no token is found, redirect to login page
+            navigate("/");
+        }
+    }, [navigate]);
 
     function handleLogout() {
         sessionStorage.removeItem("token");

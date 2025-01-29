@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseclient';
 import FacialRegistration from './FacialRegistration';
 
 const Registration = () => {
@@ -63,7 +61,7 @@ const Registration = () => {
         faceData: facialRecognitionOptIn ? faceData : null // Insert facedata only if user opts in
       };
 
-      const response = await fetch("https://facialrecbackend.onrender.com/register", {
+      const response = await fetch('https://facialrecbackend.onrender.com/register', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { supabase } from '../supabaseclient';
 import { Link, useNavigate } from "react-router-dom";
 
-
-
 const Login = ({setToken}) => {
     let navigate = useNavigate()
 
@@ -35,9 +33,27 @@ const Login = ({setToken}) => {
   
           console.log("Login successful:", data);
 
-          // Extract the user ID and store it (in session storage for this example)
-          const userId = data.user.id; // Assuming user.id is available
+          // Extract the user ID and store it 
+          const userId = data.user.id; 
           sessionStorage.setItem("user_id", userId);
+
+          const { data: profileData, error: profileError} = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", userId)
+            .single();
+          
+          if (profileError) {
+            console.error("Error fetching profile:", profileError);
+            alert("Error fetching profile.");
+            return;
+          }
+
+          if (!profileData || profileData.role !== 'guest') {
+            // If the user is not a guest, show an error or redirect
+            alert("You are not a guest user.");
+            return;
+          }
   
           // Store user data or token in state or local storage
           setToken(data); // Assuming user contains necessary info

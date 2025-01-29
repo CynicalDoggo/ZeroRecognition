@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Blacklist from "../components/StaffHomePage/Blacklist";
 import GuestRoomStatus from "../components/StaffHomePage/GuestRoomStatus";
@@ -8,6 +8,14 @@ import GuestCheckIn from "../components/StaffHomePage/GuestCheckIn";
 const StaffHomepage = ({ token }) => {
     let navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Guest Check In");
+
+    useEffect(() => {
+        const storedToken = sessionStorage.getItem("token");
+        if (!storedToken) {
+            // If no token is found, redirect to login page
+            navigate("/");
+        }
+    }, [navigate]);
 
     function handleLogout() {
         sessionStorage.removeItem("token");
