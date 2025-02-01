@@ -1,36 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Blacklist = () => {
-    const [blacklistedGuests, setBlacklistedGuests] = useState([
-        { id: 1, guestName: "John Doe", reason: "Unpaid bills" },
-        { id: 2, guestName: "Jane Smith", reason: "Property damage" },
-    ]);
-
+    const [blacklistedGuests, setBlacklistedGuests] = useState([]);
     const [newBlacklist, setNewBlacklist] = useState({
-        guestName: "",
+        guestEmail: "",
         reason: "",
     });
+
+    // Fetch blacklisted guests when the component mounts
+    useEffect(() => {
+        const fetchBlacklistedGuests = async () => {
+            const token = sessionStorage.getItem("token");
+            if (!token) {
+                alert("User not authenticated. Please log in again.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://192.168.1.105:5000/get_blacklisted_guests", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    setBlacklistedGuests(data.blacklistedGuests); // Assuming the response returns an array of blacklisted guests
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                alert(`Failed to fetch blacklisted guests: ${error.message}`);
+            }
+        };
+
+        fetchBlacklistedGuests();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setNewBlacklist((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleBlacklist = () => {
-        if (!newBlacklist.guestName || !newBlacklist.reason) {
+    const handleBlacklist = async () => {
+        if (!newBlacklist.guestEmail || !newBlacklist.reason) {
             alert("Please fill in both fields.");
             return;
         }
 
-        const newEntry = {
-            id: blacklistedGuests.length + 1,
-            guestName: newBlacklist.guestName,
-            reason: newBlacklist.reason,
-        };
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("User not authenticated. Please log in again.");
+            return;
+        }
 
-        setBlacklistedGuests((prev) => [...prev, newEntry]);
-        setNewBlacklist({ guestName: "", reason: "" });
-        alert("Guest successfully blacklisted.");
+        try {
+            const response = await fetch("http://192.168.1.105:5000/blacklist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                    email: newBlacklist.guestEmail, // Assuming guestEmail corresponds to email
+                    reason: newBlacklist.reason,
+                }),
+            });
+
+            console.log("Token being sent:", token); // Debugging to ensure token is retrieved
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setBlacklistedGuests((prev) => [
+                    ...prev,
+                    {
+                        id: prev.length + 1,
+                        guestEmail: newBlacklist.guestEmail,
+                        reason: newBlacklist.reason,
+                    },
+                ]);
+                setNewBlacklist({ guestEmail: "", reason: "" });
+                alert("Guest successfully blacklisted.");
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            alert(`Failed to blacklist guest: ${error.message}`);
+        }
     };
 
     return (
@@ -48,7 +107,7 @@ const Blacklist = () => {
                 <tbody>
                     {blacklistedGuests.map((guest, index) => (
                         <tr key={guest.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-red-50`}>
-                            <td className="px-6 py-3 text-left font-medium text-gray-800">{guest.guestName}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{guest.guestEmail}</td>
                             <td className="px-6 py-3 text-left font-medium text-gray-800">{guest.reason}</td>
                         </tr>
                     ))}
@@ -61,9 +120,9 @@ const Blacklist = () => {
                 <div className="space-y-4">
                     <input
                         type="text"
-                        name="guestName"
-                        placeholder="Guest Name"
-                        value={newBlacklist.guestName}
+                        name="guestEmail"
+                        placeholder="Guest Email"
+                        value={newBlacklist.guestEmail}
                         onChange={handleChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-400"
                     />
