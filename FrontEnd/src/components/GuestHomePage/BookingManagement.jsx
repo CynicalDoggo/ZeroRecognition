@@ -1,22 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const BookingManagement = () => {
     const navigate = useNavigate();
+    const [bookings, setBookings] = useState([]);
 
-    // Example bookings data, change to dynamic can alr
-    const [bookings, setBookings] = useState([
-        { id: 1, roomType: "Deluxe Suite", checkIn: "2024-12-25", checkOut: "2024-12-30" },
-        { id: 2, roomType: "Standard Room", checkIn: "2024-12-20", checkOut: "2024-12-27" },
-    ]);
+    // Fetch bookings from backend
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/bookings"); // Adjust API URL if needed
+                const data = await response.json();
+                setBookings(data); // Set fetched bookings into state
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+            }
+        };
 
-    const handleCancelation = (id) => {
-        alert(`Cancel booking for ID: ${id}`);
-        // Should just delete straight upon clicking
+        fetchBookings();
+    }, []);
+
+    // Cancel booking function
+    const handleCancelation = async (id) => {
+        if (!window.confirm("Are you sure you want to cancel this booking?")) return;
+
+        try {
+            const response = await fetch(`http://localhost:5000/bookings/${id}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== id));
+                alert("Booking canceled successfully!");
+            } else {
+                alert("Failed to cancel booking");
+            }
+        } catch (error) {
+            console.error("Error canceling booking:", error);
+            alert("An error occurred while canceling the booking.");
+        }
     };
 
+    // Navigate to the booking form
     const handleNewBooking = () => {
-        navigate("/booking-form"); // Navigate to the BookingForm page
+        navigate("/booking-form");
     };
 
     return (
@@ -33,34 +60,35 @@ const BookingManagement = () => {
             </div>
 
             {/* Bookings List */}
-            {bookings.map((booking) => (
-                <div key={booking.id} className="bg-white rounded-lg shadow-md p-6 space-y-4">
-                    <div className="grid grid-cols-3 gap-6">
-                        {/* Room Type */}
-                        <div>
-                            <p className="text-sm text-gray-600">Room Type</p>
-                            <p className="font-medium">{booking.roomType}</p>
+            {bookings.length > 0 ? (
+                bookings.map((booking) => (
+                    <div key={booking.id} className="bg-white rounded-lg shadow-md p-6 space-y-4">
+                        <div className="grid grid-cols-3 gap-6">
+                            <div>
+                                <p className="text-sm text-gray-600">Room Type</p>
+                                <p className="font-medium">{booking.roomType}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Check-in</p>
+                                <p className="font-medium">{booking.checkIn}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Check-out</p>
+                                <p className="font-medium">{booking.checkOut}</p>
+                            </div>
                         </div>
-
-                        {/* Booking Dates */}
-                        <div>
-                            <p className="text-sm text-gray-600">Check-in</p>
-                            <p className="font-medium">{booking.checkIn}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-600">Check-out</p>
-                            <p className="font-medium">{booking.checkOut}</p>
-                        </div>
+                        {/* Modify Booking */}
+                        <button
+                            onClick={() => handleCancelation(booking.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        >
+                            Cancel Booking
+                        </button>
                     </div>
-                    {/* Modify Booking */}
-                    <button
-                        onClick={() => handleCancelation(booking.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    >
-                        Cancel Booking
-                    </button>
-                </div>
-            ))}
+                ))
+            ) : (
+                <p>No bookings found.</p>
+            )}
         </div>
     );
 };
