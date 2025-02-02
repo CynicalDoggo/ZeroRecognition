@@ -1,131 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const GuestCheckIn = () => {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [guestsToCheckIn, setGuestsToCheckIn] = useState([
-        { id: 1, name: "John Doe", checkInDate: "2025-01-15", checkOutDate: "2025-01-18" },
-        { id: 2, name: "Jane Smith", checkInDate: "2025-01-15", checkOutDate: "2025-01-19" },
-    ]);
-    const [checkedInGuests, setCheckedInGuests] = useState([]);
-
     const navigate = useNavigate();
+    const [guests, setGuests] = useState([]);
+    const [checkedInGuests, setCheckedInGuests] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+    useEffect(() => {
+        fetchGuests();
+    }, []);
+
+    const fetchGuests = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/guests");
+            setGuests(response.data.pending);
+            setCheckedInGuests(response.data.checkedIn);
+        } catch (error) {
+            console.error("Error fetching guest data:", error);
+        }
     };
 
-    const filteredGuests = guestsToCheckIn.filter((guest) =>
+    const handleCheckIn = async (guestId) => {
+        try {
+            await axios.post(`http://localhost:5000/checkin/${guestId}`);
+            fetchGuests();
+            navigate("/FacialRecognition");
+        } catch (error) {
+            console.error("Error checking in guest:", error);
+        }
+    };
+
+    const filteredGuests = guests.filter((guest) =>
         guest.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleCheckIn = (guest) => {
-        setCheckedInGuests((prev) => [...prev, guest]);
-        setGuestsToCheckIn((prev) => prev.filter((g) => g.id !== guest.id));
-        navigate("/FacialRecognition", { state: { guest } });
-    };
-
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold mb-6">Guest Check-In</h1>
-
-            {/* Search Bar */}
-            <div className="mb-6 relative">
-                <svg 
-                    className="absolute top-1/2 left-3 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-white" 
-                    aria-hidden="true" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    fill="none" 
-                    viewBox="0 0 24 24"
-                >
-                    <path 
-                    stroke="currentColor" 
-                    stroke-linecap="round" 
-                    stroke-width="2" 
-                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                    />
-                </svg>
+            <h2 className="text-3xl font-bold text-center mb-6">Guest Check-In</h2>
+            
+            <div className="mb-6">
                 <input
                     type="text"
-                    placeholder="Search for a guest..."
+                    placeholder="Search Guest"
                     value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
             </div>
-
-            {/* Guests to Check In */}
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Guests to Check In</h2>
-                <table className="w-full bg-white shadow-md rounded overflow-hidden">
-                    <thead className="bg-blue-500 text-white">
-                        <tr>
-                            <th className="px-4 py-2 text-left">Guest Name</th>
-                            <th className="px-4 py-2 text-left">Check-In Date</th>
-                            <th className="px-4 py-2 text-left">Check-Out Date</th>
-                            <th className="px-4 py-2 text-left">Action</th>
+            
+            {/* Guests Pending Check-In */}
+            <h3 className="text-xl font-semibold mb-4">Guests to Check-In Today</h3>
+            <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden mb-6">
+                <thead>
+                    <tr className="bg-blue-500 text-white">
+                        <th className="px-6 py-3 text-left">Guest Name</th>
+                        <th className="px-6 py-3 text-left">Check-in Date</th>
+                        <th className="px-6 py-3 text-left">Check-out Date</th>
+                        <th className="px-6 py-3 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredGuests.map((guest) => (
+                        <tr key={guest.id} className="hover:bg-blue-50">
+                            <td className="px-6 py-3 text-left">{guest.name}</td>
+                            <td className="px-6 py-3 text-left">{guest.checkInDate}</td>
+                            <td className="px-6 py-3 text-left">{guest.checkOutDate}</td>
+                            <td className="px-6 py-3 text-left">
+                                <button
+                                    onClick={() => handleCheckIn(guest.id)}
+                                    className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+                                >
+                                    Check-In
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {filteredGuests.length > 0 ? (
-                            filteredGuests.map((guest) => (
-                                <tr key={guest.id} className="hover:bg-gray-100">
-                                    <td className="px-4 py-2 text-left">{guest.name}</td>
-                                    <td className="px-4 py-2 text-left">{guest.checkInDate}</td>
-                                    <td className="px-4 py-2 text-left">{guest.checkOutDate}</td>
-                                    <td className="px-4 py-2 text-left">
-                                        <button
-                                            onClick={() => handleCheckIn(guest)}
-                                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                                        >
-                                            Check-In
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="4" className="px-4 py-2 text-center text-gray-500">
-                                    No guests found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
 
-            {/* Checked-In Guests */}
-            <div>
-                <h2 className="text-xl font-semibold mb-4">Checked-In Guests</h2>
-                <table className="w-full bg-white shadow-md rounded overflow-hidden">
-                    <thead className="bg-green-500 text-white">
-                        <tr>
-                            <th className="px-4 py-2 text-left">Guest Name</th>
-                            <th className="px-4 py-2 text-left">Check-In Date</th>
-                            <th className="px-4 py-2 text-left">Check-Out Date</th>
+            {/* Guests Already Checked-In */}
+            <h3 className="text-xl font-semibold mb-4">Checked-In Guests</h3>
+            <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+                <thead>
+                    <tr className="bg-green-500 text-white">
+                        <th className="px-6 py-3 text-left">Guest Name</th>
+                        <th className="px-6 py-3 text-left">Check-in Date</th>
+                        <th className="px-6 py-3 text-left">Check-out Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {checkedInGuests.map((guest) => (
+                        <tr key={guest.id} className="hover:bg-green-50">
+                            <td className="px-6 py-3 text-left">{guest.name}</td>
+                            <td className="px-6 py-3 text-left">{guest.checkInDate}</td>
+                            <td className="px-6 py-3 text-left">{guest.checkOutDate}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {checkedInGuests.length > 0 ? (
-                            checkedInGuests.map((guest) => (
-                                <tr key={guest.id} className="hover:bg-gray-100">
-                                    <td className="px-4 py-2 text-left">{guest.name}</td>
-                                    <td className="px-4 py-2 text-left">{guest.checkInDate}</td>
-                                    <td className="px-4 py-2 text-left">{guest.checkOutDate}</td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="3" className="px-4 py-2 text-center text-gray-500">
-                                    No guests checked in yet.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
