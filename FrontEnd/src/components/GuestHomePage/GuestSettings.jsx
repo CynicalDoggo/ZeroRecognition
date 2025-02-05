@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import FacialRegistration from "../../Pages/FacialRegistration";
 
 const GuestSettings = () => {
+  const [enableFacialRecognition, setEnableFacialRecognition] = useState(false);
+  const [showFacialRegistration, setShowFacialRegistration] = useState(false);
   const [userData, setUserData] = useState(null); // Hold user data
   const [isLoading, setIsLoading] = useState(true); // Manage loading state
   const [error, setError] = useState(null);
@@ -14,8 +17,17 @@ const GuestSettings = () => {
     newPassword: "",
     confirmPassword: "",
   });
-
+  
   const navigate = useNavigate();
+
+  const handleFacialRecognitionChange = (e) => {
+    const isChecked = e.target.checked;
+    setEnableFacialRecognition(isChecked);
+    
+    if (!isChecked) {
+      setShowFacialRegistration(false); // Hide webcam when disabled
+    }
+  };
 
   // Fetch the logged-in user's data on component mount
   useEffect(() => {
@@ -118,11 +130,6 @@ const GuestSettings = () => {
     }
   };
 
-  const handleUpdateFacialData = () => {
-    alert("Update facial recognition data functionality triggered!");
-    // Add logic for updating facial data
-  };
-
   if (isLoading) {
     return <p>Loading...</p>; // Show a loading state while fetching user data
   }
@@ -176,41 +183,42 @@ const GuestSettings = () => {
         </form>
       </div>
 
-      {/* Security Notifications */}
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Security Notifications</h3>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="enableNotifications"
-            checked={settings.enableNotifications}
-            onChange={handleSettingsChange}
-            className="w-4 h-4"
-          />
-          <span>Enable security notifications</span>
-        </label>
-      </div>
-
       {/* Facial Recognition */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Facial Recognition</h3>
         <label className="flex items-center space-x-2 mb-4">
           <input
             type="checkbox"
-            name="enableFacialRecognition"
-            checked={settings.enableFacialRecognition}
-            onChange={handleSettingsChange}
+            checked={enableFacialRecognition}
+            onChange={handleFacialRecognitionChange}
             className="w-4 h-4"
           />
-          <span>Enable facial recognition for check-in</span>
+          <span>
+            Enable facial recognition for check-in
+          </span>
         </label>
-        {settings.enableFacialRecognition && (
-          <button
-            onClick={handleUpdateFacialData}
-            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-          >
-            Update Facial Recognition Data
-          </button>
+
+        {/* Upload Facial Data Button */}
+        {enableFacialRecognition && !showFacialRegistration && (
+            <button
+                onClick={() => setShowFacialRegistration(true)} // Show webcam when clicked
+                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+            >
+                Upload Facial Data
+            </button>
+        )}
+
+        {/* Show Webcam (FacialRegistration) Only When Needed */}
+        {showFacialRegistration && (
+          <div className="mt-4 p-4 border border-gray-300 rounded-lg flex flex-col items-center justify-center">
+            <FacialRegistration />
+            <button
+              onClick={() => setShowFacialRegistration(false)} // Hide webcam when clicked
+              className="mt-4 px-6 py-2 bg-red-600 text-white font-bold rounded"
+            >
+              Close Webcam
+            </button>
+          </div>
         )}
       </div>
     </div>
