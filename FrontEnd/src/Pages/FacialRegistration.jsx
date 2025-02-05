@@ -18,7 +18,7 @@ const FacialRegistration = () => {
 
             try {
                 // Send image to backend using fetch
-                const response = await fetch('http://127.0.0.1:5000/detect_faces_fxn', {
+                const response = await fetch('http://127.0.0.1:8080/detect_faces_fxn', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({image: imageSrc.split(",")[1]}),
@@ -116,7 +116,7 @@ const FacialRegistration = () => {
         setCapturedImage(imageSrc); 
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/save_embedding', {
+            const response = await fetch('http://127.0.0.1:8080/save_embedding', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
