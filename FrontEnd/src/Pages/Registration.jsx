@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import FacialRegistration from './FacialRegistration';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -11,10 +10,8 @@ const Registration = () => {
     confirmPassword: '',
   });
 
-  const [facialRecognitionOptIn, setFacialRecognitionOptIn] = useState(false);
   const [privacyAndConsentChecked, setPrivacyAndConsentChecked] = useState(false); //Set P&C default as false
   const [showModal, setShowModal] = useState(false); //Set P&C text modal showing default as false 
-  const [faceData, setFaceData] = useState(null); // State to store captured facial data
 
 
   function handleChange(event) {
@@ -24,18 +21,10 @@ const Registration = () => {
     }));
   }
 
-  function handleFacialRecognitionChange(event) {
-    setFacialRecognitionOptIn(event.target.checked);
-  }
-
   function handlePrivacyAndConsentChange(event) {
     setPrivacyAndConsentChecked(event.target.checked);
   }
 
-  const handleFacialDataCapture = (capturedData) => {
-    setFaceData(capturedData); // Store captured facial data in state
-    console.log("Facial data captured successfully!: ", capturedData);
-  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -57,11 +46,10 @@ const Registration = () => {
         phoneNum: formData.phoneNum,
         email: formData.email,
         password: formData.password,
-        facialRecognitionOptIn: facialRecognitionOptIn,
-        faceData: facialRecognitionOptIn ? faceData : null // Insert facedata only if user opts in
+        faceData: null 
       };
 
-      const response = await fetch('https://facialrecbackend.onrender.com/register', {
+      const response = await fetch('http://localhost:5000/register', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -163,23 +151,6 @@ const Registration = () => {
             </span>
           </label>
         </div>
-
-        <div className="mb-6">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={facialRecognitionOptIn}
-              onChange={handleFacialRecognitionChange}
-            />
-            <span>Opt-in for Facial Recognition</span>
-          </label>
-        </div>
-
-        {/* Render FacialRegistration if opted in */}
-        {facialRecognitionOptIn && (
-          <FacialRegistration onCapture={handleFacialDataCapture} />
-        )}
 
         <button
           type="submit"
