@@ -18,7 +18,7 @@ const FacialRegistration = () => {
 
             try {
                 // Send image to backend using fetch
-                const response = await fetch('https://facial-detection-app-v4-127354774628.asia-southeast1.run.app/detect_faces_fxn', {
+                const response = await fetch('https://tda-waitress-127354774628.asia-southeast1.run.app/detect_faces_fxn', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({image: imageSrc.split(",")[1]}),
@@ -116,7 +116,7 @@ const FacialRegistration = () => {
         setCapturedImage(imageSrc); 
 
         try {
-            const response = await fetch('https://facial-detection-app-v4-127354774628.asia-southeast1.run.app/save_embedding', {
+            const response = await fetch('https://tda-waitress-127354774628.asia-southeast1.run.app/save_embedding', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
