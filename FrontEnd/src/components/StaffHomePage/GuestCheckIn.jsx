@@ -14,7 +14,7 @@ const GuestCheckIn = () => {
 
     const fetchGuests = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/guests");
+            const response = await axios.get("http://localhost:5000/get_guest_bookings");
             setGuests(response.data.pending);
             setCheckedInGuests(response.data.checkedIn);
         } catch (error) {
