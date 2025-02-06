@@ -17,7 +17,7 @@ const Blacklist = () => {
             }
 
             try {
-                const response = await fetch("http://192.168.1.105:5000/get_blacklisted_guests", {
+                const response = await fetch("https://facialrecbackend.onrender.com/get_blacklisted_guests", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const Blacklist = () => {
         }
 
         try {
-            const response = await fetch("http://192.168.1.105:5000/blacklist", {
+            const response = await fetch("https://facialrecbackend.onrender.com/blacklist", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
