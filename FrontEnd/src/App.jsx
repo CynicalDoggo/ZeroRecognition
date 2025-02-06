@@ -9,6 +9,7 @@ import AdminLogin from './Pages/AdminLogin';
 import BookingForm from './components/GuestHomePage/BookingForm';
 import StaffHomepage from './Pages/StaffHomepage';
 import AdminHomepage from './Pages/AdminHomepage';
+import FacialRecognition from './components/StaffHomePage/FacialRecognition';
 
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
             <Route path="/Homepage" element={<Homepage token={token} />} />
             <Route path="/facial-registration" element={<FacialRegistration />} />
             <Route path="/booking-form" element={<BookingForm />} />
+            <Route path="/facial-recognition" element={<FacialRecognition />} />
           </>
         ) : (
           // Redirect to Login if not authenticated

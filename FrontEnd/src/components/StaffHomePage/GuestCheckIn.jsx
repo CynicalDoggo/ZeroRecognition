@@ -26,9 +26,18 @@ const GuestCheckIn = () => {
         try {
             await axios.post(`http://localhost:5000/checkin/${guestId}`);
             fetchGuests();
-            navigate("/FacialRecognition");
+            navigate("/facial-recognition");
         } catch (error) {
             console.error("Error checking in guest:", error);
+        }
+    };
+
+    const handleCheckOut = async (guestId) => {
+        try {
+            await axios.post(`http://localhost:5000/checkout/${guestId}`);
+            fetchGuests();
+        } catch (error) {
+            console.error("Error checking out guest:", error);
         }
     };
 
@@ -88,6 +97,7 @@ const GuestCheckIn = () => {
                         <th className="px-6 py-3 text-left">Guest Name</th>
                         <th className="px-6 py-3 text-left">Check-in Date</th>
                         <th className="px-6 py-3 text-left">Check-out Date</th>
+                        <th className="px-6 py-3 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +106,14 @@ const GuestCheckIn = () => {
                             <td className="px-6 py-3 text-left">{guest.name}</td>
                             <td className="px-6 py-3 text-left">{guest.checkInDate}</td>
                             <td className="px-6 py-3 text-left">{guest.checkOutDate}</td>
+                            <td className="px-6 py-3 text-left">
+                                <button
+                                    onClick={() => handleCheckOut(guest.id)}
+                                    className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
+                                >
+                                    Check-Out
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
