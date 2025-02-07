@@ -14,7 +14,7 @@ const GuestCheckIn = () => {
 
     const fetchGuests = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/get_guest_bookings");
+            const response = await axios.get("https://facialrecbackend.onrender.com/get_guest_bookings");
             setGuests(response.data.pending);
             setCheckedInGuests(response.data.checkedIn);
         } catch (error) {
@@ -22,19 +22,17 @@ const GuestCheckIn = () => {
         }
     };
 
-    const handleCheckIn = async (guestId) => {
+    const handleCheckIn = async (reservationId) => {
         try {
-            await axios.post(`http://localhost:5000/checkin/${guestId}`);
-            fetchGuests();
-            navigate("/facial-recognition");
+            navigate(`/facial-recognition?reservationId=${reservationId}`);
         } catch (error) {
             console.error("Error checking in guest:", error);
         }
     };
 
-    const handleCheckOut = async (guestId) => {
+    const handleCheckOut = async (reservationId) => {
         try {
-            await axios.post(`http://localhost:5000/checkout/${guestId}`);
+            await axios.post(`http://localhost:5000/checkout/${reservationId}`);
             fetchGuests();
         } catch (error) {
             console.error("Error checking out guest:", error);
