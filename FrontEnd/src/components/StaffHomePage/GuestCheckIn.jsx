@@ -39,7 +39,7 @@ const GuestCheckIn = () => {
     const handleCheckOut = async (reservationId) => {
         try {
           const response = await fetch(
-            `http://localhost:5000/check_out/${reservationId}`, 
+            `https://facialrecbackend.onrender.com/check_out/${reservationId}`, 
             { method: "DELETE" }
           );
       
