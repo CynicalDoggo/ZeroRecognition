@@ -9,7 +9,7 @@ const BookingManagement = () => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const response = await fetch("http://localhost:5000/get_guest_bookingsGUEST"); 
+                const response = await fetch("https://facialrecbackend.onrender.com/get_guest_bookingsGUEST"); 
                 const data = await response.json();
                 setBookings(data); // Set fetched bookings into state
             } catch (error) {
@@ -25,7 +25,7 @@ const BookingManagement = () => {
         if (!window.confirm("Are you sure you want to cancel this booking?")) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/cancel_booking/${id}`, {
+            const response = await fetch(`https://facialrecbackend.onrender.com/cancel_booking/${id}`, {
                 method: "DELETE",
             });
 

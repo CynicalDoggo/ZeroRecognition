@@ -32,7 +32,7 @@ const GuestCheckIn = () => {
 
     const handleCheckOut = async (reservationId) => {
         try {
-            await axios.post(`http://localhost:5000/checkout/${reservationId}`);
+            await axios.post(`https://facialrecbackend.onrender.com/checkout/${reservationId}`);
             fetchGuests();
         } catch (error) {
             console.error("Error checking out guest:", error);
