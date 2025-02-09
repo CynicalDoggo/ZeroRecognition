@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const GuestCheckIn = () => {
     const navigate = useNavigate();
@@ -14,13 +13,20 @@ const GuestCheckIn = () => {
 
     const fetchGuests = async () => {
         try {
-            const response = await axios.get("https://facialrecbackend.onrender.com/get_guest_bookings");
-            setGuests(response.data.pending);
-            setCheckedInGuests(response.data.checkedIn);
+            const response = await fetch("https://facialrecbackend.onrender.com/get_guest_bookings");
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            setGuests(data.pending);
+            setCheckedInGuests(data.checkedIn);
         } catch (error) {
             console.error("Error fetching guest data:", error);
         }
     };
+    
 
     const handleCheckIn = async (reservationId) => {
         try {
@@ -32,13 +38,23 @@ const GuestCheckIn = () => {
 
     const handleCheckOut = async (reservationId) => {
         try {
-            await axios.post(`https://facialrecbackend.onrender.com/checkout/${reservationId}`);
-            fetchGuests();
+          const response = await fetch(
+            `http://localhost:5000/check_out/${reservationId}`, 
+            { method: "DELETE" }
+          );
+      
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+          }
+      
+          fetchGuests();
+          alert("Guest checked out successfully!");
         } catch (error) {
-            console.error("Error checking out guest:", error);
+          console.error("Check-out error:", error);
+          alert(error.message || "Failed to check out guest");
         }
-    };
-
+      };
     const filteredGuests = guests.filter((guest) =>
         guest.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
