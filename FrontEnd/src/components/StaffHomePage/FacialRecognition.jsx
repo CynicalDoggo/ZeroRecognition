@@ -55,7 +55,7 @@ const FacialRecognition = () => {
     const capturedImage = captureImage();
   
     try {
-      const response = await fetch("http://localhost:5000/facial_checkin", {
+      const response = await fetch("https://fra-127354774628.asia-southeast1.run.app/facial_checkin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
