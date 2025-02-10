@@ -50,6 +50,16 @@ const FacialRecognition = () => {
     return canvas.toDataURL("image/jpeg");
   };
 
+  const stopCamera = () => {
+    const video = document.getElementById("videoFeed");
+    if (video && video.srcObject) {
+      let stream = video.srcObject;
+      let tracks = stream.getTracks();
+      tracks.forEach(track => track.stop()); // Stop each track in the stream
+      video.srcObject = null;
+    }
+  };
+  
   const handleFacialCheckIn = async () => {
     setMessage("Processing facial recognition...");
     const capturedImage = captureImage();
@@ -69,8 +79,11 @@ const FacialRecognition = () => {
       const data = await response.json();
       if (response.ok && data.success) {
         setMessage("Check-in successful! Redirecting...");
-        clearInterval(intervalRef.current);
-        setTimeout(() => navigate("/StaffHomepage"), 10000);
+        
+        clearInterval(intervalRef.current); // Stop polling
+        stopCamera(); // Stop the camera
+  
+        setTimeout(() => navigate("/StaffHomepage"), 3000);
       } else {
         setMessage(data.message || "Processing facial recognition...");
       }
@@ -79,7 +92,6 @@ const FacialRecognition = () => {
       setMessage("Error processing facial recognition.");
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h2 className="text-2xl font-bold mb-4">Facial Recognition Check-In</h2>
