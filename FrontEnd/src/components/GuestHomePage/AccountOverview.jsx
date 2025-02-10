@@ -6,9 +6,11 @@ const AccountOverview = () => {
     email: "",
     phone: "",
   });
-  const [currentUser, setCurrentUser] = useState(null); // Declare currentUser state
+  const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ first_name: "", email: "", phone: "" });
 
   const userId = sessionStorage.getItem("user_id");
 
@@ -30,6 +32,7 @@ const AccountOverview = () => {
         const data = await response.json();
         if (data.success) {
           setUserData(data.user_data);
+          setFormData(data.user_data);
         } else {
           throw new Error(data.message || "Unknown error");
         }
@@ -40,18 +43,37 @@ const AccountOverview = () => {
       }
     };
 
-    const fetchCurrentUser = async () => {
-      // Simulate fetching current user (use Supabase auth or other methods)
-      const user = {
-        id: userId,
-        email: userData.email, // Use email from userData
-      };
-      setCurrentUser(user); // Set current user
-    };
-
     fetchUserData();
-    fetchCurrentUser();
-  }, [userId, userData.email]);
+  }, [userId]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const response = await fetch("https://facialrecbackend.onrender.com/update_user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_id: userId, ...formData }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update user data");
+      }
+      const data = await response.json();
+      if (data.success) {
+        setUserData(formData);
+        setIsEditing(false);
+      } else {
+        throw new Error(data.message || "Update failed");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -63,23 +85,39 @@ const AccountOverview = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        {/* <h2 className="text-2xl font-bold text-gray-800">Account Overview</h2> */}
-      </div>
-
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center">
               <div>
                 <p className="text-sm text-gray-600">Full Name</p>
-                <p className="font-medium">{userData.first_name || "N/A"}</p>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
+                    className="border p-2 rounded"
+                  />
+                ) : (
+                  <p className="font-medium">{userData.first_name || "N/A"}</p>
+                )}
               </div>
             </div>
             <div className="flex items-center">
               <div>
                 <p className="text-sm text-gray-600">Email</p>
-                <p className="font-medium">{userData.email || "N/A"}</p>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="border p-2 rounded"
+                  />
+                ) : (
+                  <p className="font-medium">{userData.email || "N/A"}</p>
+                )}
               </div>
             </div>
           </div>
@@ -87,10 +125,45 @@ const AccountOverview = () => {
             <div className="flex items-center">
               <div>
                 <p className="text-sm text-gray-600">Phone</p>
-                <p className="font-medium">{userData.mobile_number || "N/A"}</p>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="border p-2 rounded"
+                  />
+                ) : (
+                  <p className="font-medium">{userData.phone || "N/A"}</p>
+                )}
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-4">
+          {isEditing ? (
+            <>
+              <button
+                onClick={handleUpdate}
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2 hover:bg-blue-600"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Update Account Details
+            </button>
+          )}
         </div>
       </div>
     </div>
