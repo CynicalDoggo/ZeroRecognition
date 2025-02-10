@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const GuestLog = () => {
-    const [logEntries, setLogEntries] = useState([
-        { id: 1, guestName: "John Doe", timestamp: "2024-12-01 14:00", activity: "Check-In" },
-        { id: 2, guestName: "Jane Smith", timestamp: "2024-12-02 10:30", activity: "Check-Out" },
-        { id: 3, guestName: "Emily Davis", timestamp: "2024-12-02 15:00", activity: "Check-In" },
-    ]);
+    const [logEntries, setLogEntries] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/guest-log")
+            .then((response) => response.json())
+            .then((data) => setLogEntries(data))
+            .catch((error) => console.error("Error fetching data:", error));
+    }, []);
 
     return (
         <div className="p-6 bg-gradient-to-r from-green-50 to-green-100 shadow-lg rounded-lg">

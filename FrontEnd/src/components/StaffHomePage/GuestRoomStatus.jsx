@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const GuestRoomStatus = () => {
-    const [rooms, setRooms] = useState([
-        { id: 1, guestName: "John Doe", checkOutDate: "2024-12-25", status: "Occupied" },
-        { id: 2, guestName: "Jane Smith", checkOutDate: "2024-12-20", status: "Vacant" },
-        { id: 3, guestName: "Mark Taylor", checkOutDate: "2024-12-22", status: "Cleaning" },
-        { id: 4, guestName: "Emily Davis", checkOutDate: "2024-12-23", status: "Occupied" },
-        { id: 5, guestName: "Michael Brown", checkOutDate: "2024-12-24", status: "Vacant" },
-    ]);
+    const [rooms, setRooms] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/room-status")
+            .then((response) => response.json())
+            .then((data) => setRooms(data))
+            .catch((error) => console.error("Error fetching data:", error));
+    }, []);
 
     const getStatusClass = (status) => {
         switch (status) {
