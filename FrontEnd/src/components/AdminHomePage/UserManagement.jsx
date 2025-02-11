@@ -53,7 +53,7 @@ const UserManagement = () => {
 
     const handleDeleteStaff = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/staff/${id}`, {
+            const response = await fetch(`http://localhost:5000/get_all_staff/${id}`, {
                 method: "DELETE"
             });
     

@@ -59,12 +59,12 @@ const BookingForm = () => {
       const payload = {
         user_id: userId,
         room_type: roomType,
-        check_in_date: checkInDate,
-        check_out_date: checkOutDate,
+        check_in_date: new Date(checkInDate).toISOString(),
+        check_out_date: new Date(checkOutDate).toISOString(),
         ...amenities, // Include amenities dynamically
       };
 
-      const response = await fetch("https://facialrecbackend.onrender.com/book_room", {
+      const response = await fetch("http://localhost:5000/book_room", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

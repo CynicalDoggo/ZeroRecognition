@@ -53,7 +53,7 @@ const AccountOverview = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch("https://facialrecbackend.onrender.com/update_user", {
+      const response = await fetch("http://localhost:5000/update_user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,10 +88,11 @@ const AccountOverview = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
-            <div className="flex items-center">
-              <div>
-                <p className="text-sm text-gray-600">Full Name</p>
-                {isEditing ? (
+          <div className="flex items-center">
+            <div>
+              <p className="text-sm text-gray-600">Full Name</p>
+              {isEditing ? (
+                <>
                   <input
                     type="text"
                     name="first_name"
@@ -99,11 +100,21 @@ const AccountOverview = () => {
                     onChange={handleInputChange}
                     className="border p-2 rounded"
                   />
-                ) : (
-                  <p className="font-medium">{userData.first_name || "N/A"}</p>
-                )}
-              </div>
+                  <input
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
+                    className="border p-2 rounded mt-2"
+                  />
+                </>
+              ) : (
+                <p className="font-medium">
+                  {`${userData.first_name || ""} ${userData.last_name || ""}`.trim() || "N/A"}
+                </p>
+              )}
             </div>
+          </div>
             <div className="flex items-center">
               <div>
                 <p className="text-sm text-gray-600">Email</p>
@@ -129,12 +140,12 @@ const AccountOverview = () => {
                   <input
                     type="text"
                     name="phone"
-                    value={formData.phone}
+                    value={formData.mobile_number}
                     onChange={handleInputChange}
                     className="border p-2 rounded"
                   />
                 ) : (
-                  <p className="font-medium">{userData.phone || "N/A"}</p>
+                  <p className="font-medium">{userData.mobile_number || "N/A"}</p>
                 )}
               </div>
             </div>

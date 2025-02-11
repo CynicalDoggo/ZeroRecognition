@@ -6,7 +6,7 @@ const SystemMonitoring = () => {
   // Fetch logs from the Flask backend
   const fetchLogs = async () => {
     try {
-      const response = await fetch("http://localhost:5000/logs");
+      const response = await fetch("http://localhost:5000/retrieve_logs");
       const data = await response.json();
       setLogEntries(data);
     } catch (error) {
@@ -33,7 +33,7 @@ const SystemMonitoring = () => {
         <tbody>
           {logEntries.map((entry) => (
             <tr key={entry.id} className="hover:bg-blue-50">
-              <td className="px-6 py-3 text-gray-800">{entry.timestamp}</td>
+              <td className="px-6 py-3 text-gray-800">{entry.logged_time}</td>
               <td className="px-6 py-3 text-gray-800">{entry.activity}</td>
             </tr>
           ))}

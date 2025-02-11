@@ -51,33 +51,43 @@ const BookingManagement = () => {
         setNewCheckOut(booking.checkOutDate);
     };
 
-    // Submit modified dates
     const handleUpdateBooking = async () => {
         if (!selectedBooking) return;
         
         try {
-            const response = await fetch(`https://facialrecbackend.onrender.com/modify_booking/${selectedBooking.id}`, {
+            const response = await fetch(`http://localhost:5000/edit_booking/${selectedBooking.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                    checkInDate: newCheckIn, 
-                    checkOutDate: newCheckOut 
+                    check_in_date: newCheckIn, 
+                    check_out_date: newCheckOut  
                 }),
             });
-
-            if (response.ok) {
-                alert("Booking updated successfully!");
-                setBookings(bookings.map(b => b.id === selectedBooking.id ? { ...b, checkInDate: newCheckIn, checkOutDate: newCheckOut } : b));
-                setSelectedBooking(null);
-            } else {
-                alert("Failed to update booking.");
+    
+            const result = await response.json();
+            
+            if (!response.ok) {
+                alert(result.message || "Update failed");
+                return;
             }
+    
+            // Update local state
+            setBookings(bookings.map(b => 
+                b.id === selectedBooking.id 
+                    ? { ...b, 
+                        checkInDate: newCheckIn,
+                        checkOutDate: newCheckOut
+                      } 
+                    : b
+            ));
+            setSelectedBooking(null);
+            alert("Booking updated successfully!");
+            
         } catch (error) {
-            console.error("Error updating booking:", error);
-            alert("An error occurred.");
+            console.error("Update error:", error);
+            alert("Failed to connect to server");
         }
     };
-
     const today = new Date().toISOString().split("T")[0];
 
     return (
