@@ -20,46 +20,70 @@ const GuestSettings = () => {
   
   const navigate = useNavigate();
 
-  const handleFacialRecognitionChange = (e) => {
+  const handleFacialRecognitionChange = async (e) => {
     const isChecked = e.target.checked;
     setEnableFacialRecognition(isChecked);
-    
+  
     if (!isChecked) {
       setShowFacialRegistration(false); // Hide webcam when disabled
     }
+  
+    // Send update to the backend
+    try {
+      const response = await fetch("https://facialrecbackend.onrender.com/update_settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userData.user_id,
+          enableFacialRecognition: isChecked,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to update settings");
+      }
+  
+      console.log("Facial recognition setting updated successfully");
+    } catch (error) {
+      console.error("Error updating facial recognition setting:", error);
+    }
   };
+  
 
   // Fetch the logged-in user's data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userId = sessionStorage.getItem("user_id");
-
+  
         if (!userId) {
           throw new Error("User ID is missing");
         }
-
-        console.log("User ID:", userId); // Debugging log
-
+  
+        console.log("User ID:", userId);
+  
         const response = await fetch(
           `https://facialrecbackend.onrender.com/get_user_data?user_id=${userId}`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
-
+  
         const data = await response.json();
-        console.log("Fetched data:", data); // Debugging log
-
+        console.log("Fetched data:", data);
+  
         if (data.success) {
           setUserData(data.user_data);
+  
+          // Set enableFacialRecognition based on stored value
+          setEnableFacialRecognition(data.user_data.enableFacialRecognition);
         } else {
           throw new Error(data.message || "Unknown error");
         }
@@ -67,12 +91,13 @@ const GuestSettings = () => {
         console.error("Error:", err.message);
         setError(err.message);
       } finally {
-        setIsLoading(false); // Ensure loading state is updated
+        setIsLoading(false);
       }
     };
-
+  
     fetchUserData();
   }, []);
+  
 
   const handleSettingsChange = (event) => {
     const { name, checked } = event.target;
