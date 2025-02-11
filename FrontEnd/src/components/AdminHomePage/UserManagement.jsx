@@ -16,36 +16,35 @@ const UserManagement = () => {
 
     const fetchStaffData = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/staff");
-            setStaffList(response.data);
+            const response = await fetch("http://localhost:5000/get_all_staff");
+            if (!response.ok) throw new Error("Failed to fetch staff data");
+            const data = await response.json();
+            setStaffList(data);
         } catch (error) {
             console.error("Error fetching staff data:", error);
         }
     };
+    
 
     const handleAddStaff = async () => {
-        if (!newStaff.email || !newStaff.password) {
-            alert("Please fill out both fields.");
-            return;
-        }
-
         try {
-            if (editingStaff) {
-                await axios.put(`http://localhost:5000/staff/${editingStaff.id}`, newStaff);
-                alert("Staff member updated successfully.");
-            } else {
-                await axios.post("http://localhost:5000/staff", { ...newStaff, role: "Staff" });
-                alert("Staff member added successfully.");
-            }
-            setNewStaff({ email: "", password: "" });
-            setEditingStaff(null);
-            setShowForm(false);
+            const response = await fetch("http://localhost:5000/add_staff", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: newStaff.email,
+                    password: newStaff.password
+                })
+            });
+    
+            if (!response.ok) throw new Error("Failed to add staff");
+    
+            alert("Staff member added successfully.");
             fetchStaffData();
         } catch (error) {
-            console.error("Error updating staff data:", error);
+            console.error("Error adding staff:", error);
         }
     };
-
     const handleEditStaff = (staff) => {
         setEditingStaff(staff);
         setNewStaff({ email: staff.email, password: "" });
@@ -54,7 +53,12 @@ const UserManagement = () => {
 
     const handleDeleteStaff = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/staff/${id}`);
+            const response = await fetch(`http://localhost:5000/staff/${id}`, {
+                method: "DELETE"
+            });
+    
+            if (!response.ok) throw new Error("Failed to delete staff");
+    
             alert("Staff member deleted successfully.");
             fetchStaffData();
         } catch (error) {
