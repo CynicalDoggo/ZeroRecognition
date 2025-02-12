@@ -22,8 +22,34 @@ const GuestCheckIn = () => {
             const data = await response.json();
             setGuests(data.pending);
             setCheckedInGuests(data.checkedIn);
+
+            // Fetch dates separately
+            fetchCheckInOutDates(data.pending, setGuests);
+            fetchCheckInOutDates(data.checkedIn, setCheckedInGuests);
         } catch (error) {
             console.error("Error fetching guest data:", error);
+        }
+    };
+    
+    const fetchCheckInOutDates = async (guestList, setGuestState) => {
+        try {
+            const updatedGuests = await Promise.all(
+                guestList.map(async (guest) => {
+                    const response = await fetch(`http://localhost:5000/get_checkin_checkout/${guest.id}`);
+    
+                    if (!response.ok) {
+                        console.warn(`Failed to fetch dates for guest ID: ${guest.id}`);
+                        return guest; // Return guest unchanged if fetch fails
+                    }
+    
+                    const data = await response.json();
+                    return { ...guest, checkInDate: data.checkInDate, checkOutDate: data.checkOutDate };
+                })
+            );
+    
+            setGuestState(updatedGuests);
+        } catch (error) {
+            console.error("Error fetching check-in/out dates:", error);
         }
     };
     
