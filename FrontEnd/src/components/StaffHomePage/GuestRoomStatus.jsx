@@ -4,7 +4,7 @@ const GuestRoomStatus = () => {
     const [rooms, setRooms] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/room-status")
+        fetch("http://localhost:5000/get-room-status")
             .then((response) => response.json())
             .then((data) => setRooms(data))
             .catch((error) => console.error("Error fetching data:", error));

@@ -9,8 +9,22 @@ const Homepage = ({ token }) => {
     let navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Account Overview");
 
-    function handleLogout() {
+    async function handleLogout() {
+        try {
+            const userId = sessionStorage.getItem("user_id");
+            await fetch("http://localhost:5000/logOut_activity", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: userId,
+                    email: email,
+                }),
+            });
+        } catch (error) {
+            console.error("Error logging logout activity:", error);
+        }
         sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user_id");
         navigate("/");
         window.location.reload();
     }

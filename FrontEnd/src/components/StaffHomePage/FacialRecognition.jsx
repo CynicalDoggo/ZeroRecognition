@@ -79,7 +79,15 @@ const FacialRecognition = () => {
       const data = await response.json();
       if (response.ok && data.success) {
         setMessage("Check-in successful! Redirecting...");
-        
+
+        // Update room status to 'Occupied'
+        const updateResponse = await fetch(`http://localhost:5000/set-room-occupied/${reservationId}`, {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+          },
+        });
+
         clearInterval(intervalRef.current); // Stop polling
         stopCamera(); // Stop the camera
   

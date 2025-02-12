@@ -54,6 +54,16 @@ const Login = ({setToken}) => {
             alert("You are not a guest user.");
             return;
           }
+
+          // Log the login activity by calling your backend endpoint
+          await fetch("http://localhost:5000/logIn_activity", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: userId,
+                email: profileData.email, 
+              }),
+          });
   
           // Store user data or token in state or local storage
           setToken(data); // Assuming user contains necessary info
@@ -63,7 +73,8 @@ const Login = ({setToken}) => {
           console.error("Error during login:", error);
           alert(error.message);
       }
-  }
+   }
+   
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
