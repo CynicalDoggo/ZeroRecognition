@@ -23,6 +23,19 @@ const Login = ({setToken}) => {
     async function handleSubmit(e) {
       e.preventDefault();
       try {
+      // Use GET with URL-encoded email
+          const checkBlacklist = await fetch(
+            `https://facialrecbackend.onrender.com/check_blacklist?email=${encodeURIComponent(formData.email)}`,
+            { method: "GET" }
+          );
+
+          if (!checkBlacklist.ok) throw new Error("Failed to check blacklist status.");
+          
+          const { is_blacklisted } = await checkBlacklist.json();
+          if (is_blacklisted) {
+              alert("Account blacklisted.");
+              return;
+          }
           // Use Supabase's signIn method directly
           const { data, error } = await supabase.auth.signInWithPassword({
               email: formData.email,

@@ -12,16 +12,23 @@ const BookingManagement = () => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const response = await fetch("https://facialrecbackend.onrender.com/get_guest_bookingsGUEST"); 
+                const userId = sessionStorage.getItem("user_id"); // Get user_id from sessionStorage
+                if (!userId) {
+                    console.error("User ID not found in sessionStorage");
+                    return;
+                }
+    
+                const response = await fetch(`https://facialrecbackend.onrender.com/get_guest_bookingsGUEST?user_id=${userId}`);
                 const data = await response.json();
                 setBookings(data); 
             } catch (error) {
                 console.error("Error fetching bookings:", error);
             }
         };
-
+    
         fetchBookings();
     }, []);
+    
 
     // Cancel booking function
     const handleCancelation = async (id) => {

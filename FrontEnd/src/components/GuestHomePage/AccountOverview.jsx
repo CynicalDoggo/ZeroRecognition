@@ -4,7 +4,7 @@ const AccountOverview = () => {
   const [userData, setUserData] = useState({
     first_name: "",
     email: "",
-    phone: "",
+    mobile_number: "" ,
   });
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +139,7 @@ const AccountOverview = () => {
                 {isEditing ? (
                   <input
                     type="text"
-                    name="phone"
+                    name="mobile_number"
                     value={formData.mobile_number}
                     onChange={handleInputChange}
                     className="border p-2 rounded"

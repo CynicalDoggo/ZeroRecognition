@@ -4,7 +4,7 @@ const GuestLog = () => {
     const [logEntries, setLogEntries] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/get_guest_logs")
+        fetch("https://facialrecbackend.onrender.com/get_guest_logs")
             .then((response) => response.json())
             .then((data) => setLogEntries(data))
             .catch((error) => console.error("Error fetching data:", error));
