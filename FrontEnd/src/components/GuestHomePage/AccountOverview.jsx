@@ -53,7 +53,7 @@ const AccountOverview = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch("http://localhost:5000/update_user", {
+      const response = await fetch("https://facialrecbackend.onrender.com/update_user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

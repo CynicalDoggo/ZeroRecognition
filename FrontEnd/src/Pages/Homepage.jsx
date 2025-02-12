@@ -12,7 +12,7 @@ const Homepage = ({ token }) => {
     async function handleLogout() {
         try {
             const userId = sessionStorage.getItem("user_id");
-            await fetch("http://localhost:5000/logOut_activity", {
+            await fetch("https://facialrecbackend.onrender.com/logOut_activity", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

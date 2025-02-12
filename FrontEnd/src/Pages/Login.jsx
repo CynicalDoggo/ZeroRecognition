@@ -56,7 +56,7 @@ const Login = ({setToken}) => {
           }
 
           // Log the login activity by calling your backend endpoint
-          await fetch("http://localhost:5000/logIn_activity", {
+          await fetch("https://facialrecbackend.onrender.com/logIn_activity", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

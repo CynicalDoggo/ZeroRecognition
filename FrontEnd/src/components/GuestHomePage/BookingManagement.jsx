@@ -55,7 +55,7 @@ const BookingManagement = () => {
         if (!selectedBooking) return;
         
         try {
-            const response = await fetch(`http://localhost:5000/edit_booking/${selectedBooking.id}`, {
+            const response = await fetch(`https://facialrecbackend.onrender.com/edit_booking/${selectedBooking.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 

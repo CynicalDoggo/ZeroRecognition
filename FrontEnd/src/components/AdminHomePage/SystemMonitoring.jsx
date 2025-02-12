@@ -6,7 +6,7 @@ const SystemMonitoring = () => {
   // Fetch logs from the Flask backend
   const fetchLogs = async () => {
     try {
-      const response = await fetch("http://localhost:5000/retrieve_logs");
+      const response = await fetch("https://facialrecbackend.onrender.com/retrieve_logs");
       const data = await response.json();
       setLogEntries(data);
     } catch (error) {

@@ -81,7 +81,7 @@ const FacialRecognition = () => {
         setMessage("Check-in successful! Redirecting...");
 
         // Update room status to 'Occupied'
-        const updateResponse = await fetch(`http://localhost:5000/set-room-occupied/${reservationId}`, {
+        const updateResponse = await fetch(`https://facialrecbackend.onrender.com/set-room-occupied/${reservationId}`, {
           method: "PUT",
           headers: {
               "Content-Type": "application/json",

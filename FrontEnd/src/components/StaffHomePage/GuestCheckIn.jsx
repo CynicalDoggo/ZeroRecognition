@@ -13,7 +13,7 @@ const GuestCheckIn = () => {
 
     const fetchGuests = async () => {
         try {
-            const response = await fetch("http://localhost:5000/get_guest_bookings");
+            const response = await fetch("https://facialrecbackend.onrender.com/get_guest_bookings");
     
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -35,7 +35,7 @@ const GuestCheckIn = () => {
         try {
             const updatedGuests = await Promise.all(
                 guestList.map(async (guest) => {
-                    const response = await fetch(`http://localhost:5000/get_checkin_checkout/${guest.id}`);
+                    const response = await fetch(`https://facialrecbackend.onrender.com/get_checkin_checkout/${guest.id}`);
     
                     if (!response.ok) {
                         console.warn(`Failed to fetch dates for guest ID: ${guest.id}`);
@@ -65,7 +65,7 @@ const GuestCheckIn = () => {
     const handleCheckOut = async (reservationId) => {
         try {
           const response = await fetch(
-            `http://localhost:5000/check_out/${reservationId}`, 
+            `https://facialrecbackend.onrender.com/check_out/${reservationId}`, 
             { method: "DELETE" }
           );
       

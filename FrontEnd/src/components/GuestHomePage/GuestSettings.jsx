@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FacialRegistration from "../../Pages/FacialRegistration";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient("https://jbqkrihvwaurorcdagiw.supabase.co", 
+                              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpicWtyaWh2d2F1cm9yY2RhZ2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk5NzQ2ODUsImV4cCI6MjA0NTU1MDY4NX0.YKPc7TvBowLYKWVohA_5dsl9IfFMz7qr1fo4f7V3cY8"); // Use anon key
 
 const GuestSettings = () => {
   const [showFacialRegistration, setShowFacialRegistration] = useState(false);
@@ -50,22 +54,40 @@ const GuestSettings = () => {
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    if (!userData?.user_id) return alert("User ID is missing.");
-    if (passwords.newPassword !== passwords.confirmPassword) return alert("New passwords do not match!");
-
+  
+    if (!userData?.user_id) {
+      alert("User ID is missing.");
+      return;
+    }
+    
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      alert("New passwords do not match!");
+      return;
+    }
+  
     try {
+      // **Step 1: Verify Current Password by Signing In**
+      const { data: authUser, error: authError } = await supabase.auth.signInWithPassword({
+        email: userData.email,
+        password: passwords.currentPassword, // Verifying current password
+      });
+  
+      if (authError) {
+        alert("Invalid current password!");
+        return;
+      }
+
       const response = await fetch("https://facialrecbackend.onrender.com/change_password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: userData.user_id,
-          email: userData.email,
-          current_password: passwords.currentPassword,
           new_password: passwords.newPassword,
         }),
       });
-      
+  
       const result = await response.json();
+      
       if (response.ok) {
         alert("Password updated successfully!");
         setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });

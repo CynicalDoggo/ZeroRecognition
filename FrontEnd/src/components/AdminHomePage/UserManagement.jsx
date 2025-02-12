@@ -9,13 +9,9 @@ const UserManagement = () => {
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    fetchStaffData();
-  }, []);
-
   const fetchStaffData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/get_all_staff");
+      const response = await fetch("https://facialrecbackend.onrender.com/get_all_staff");
       if (!response.ok) throw new Error("Failed to fetch staff data");
       const data = await response.json();
       setStaffList(data);
@@ -24,10 +20,14 @@ const UserManagement = () => {
     }
   };
 
+  useEffect(() => {
+    fetchStaffData();
+  }, []);
+
   // Add a new staff member
   const handleAddStaff = async () => {
     try {
-      const response = await fetch("http://localhost:5000/add_staff", {
+      const response = await fetch("https://facialrecbackend.onrender.com/add_staff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -49,7 +49,7 @@ const UserManagement = () => {
   const handleUpdateStaff = async () => {
     if (!editingStaff) return;
     try {
-      const response = await fetch(`http://localhost:5000/edit_staff/${editingStaff.id}`, {
+      const response = await fetch(`https://facialrecbackend.onrender.com/edit_staff/${editingStaff.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -78,7 +78,7 @@ const UserManagement = () => {
 
   const handleDeleteStaff = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/delete_staff/${id}`, {
+      const response = await fetch(`https://facialrecbackend.onrender.com/delete_staff/${id}`, {
         method: "DELETE"
       });
       if (!response.ok) throw new Error("Failed to delete staff");
