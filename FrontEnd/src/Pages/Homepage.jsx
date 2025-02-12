@@ -17,7 +17,6 @@ const Homepage = ({ token }) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     user_id: userId,
-                    email: email,
                 }),
             });
         } catch (error) {
