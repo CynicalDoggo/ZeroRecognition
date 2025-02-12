@@ -4,7 +4,7 @@ const GuestLog = () => {
     const [logEntries, setLogEntries] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/guest-log")
+        fetch("http://localhost:5000/get_guest_logs")
             .then((response) => response.json())
             .then((data) => setLogEntries(data))
             .catch((error) => console.error("Error fetching data:", error));
@@ -25,8 +25,8 @@ const GuestLog = () => {
                 <tbody>
                     {logEntries.map((entry, index) => (
                         <tr key={entry.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-green-50`}>
-                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.guestName}</td>
-                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.timestamp}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.full_name}</td>
+                            <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.logged_time}</td>
                             <td className="px-6 py-3 text-left font-medium text-gray-800">{entry.activity}</td>
                         </tr>
                     ))}
